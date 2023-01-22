@@ -470,7 +470,7 @@ local function TitanItemDed_GetItemIdNameFromLink(linkOrId)
 end
 
 local function TitanItemDed_GetItemName(bag, slot)
-	local link = GetContainerItemLink(bag, slot)
+	local link = C_Container.GetContainerItemLink(bag, slot)
 	if(link) then
 		local itemName = GetItemInfo(link)
 		return itemName
@@ -479,16 +479,16 @@ local function TitanItemDed_GetItemName(bag, slot)
 end
 
 local function TitanItemDed_GetItemId(bag, slot)
-	local itemId=GetContainerItemID(bag, slot)
+	local itemId=C_Container.GetContainerItemID(bag, slot)
 	return itemId
 end
 
 local function TitanItemDed_GetQuality(bag, slot)
-	local _, _, _, quality = GetContainerItemInfo(bag, slot)
+	local quality = C_Container.GetContainerItemInfo(bag, slot).quality
 	if(not quality) then return nil end
 	if(quality == nil) then return nil end
 	if(quality == -1) then
-		local link = GetContainerItemLink(bag, slot)
+		local link = C_Container.GetContainerItemLink(bag, slot)
 		if (link) then
 			_, _, quality = GetItemInfo(link)
 			if(quality == nil) then return nil end
@@ -503,7 +503,7 @@ end
 -- This function checked for soul bags, ammo pouches, and quivers, all which no longer exist, so it is no longer required.
 local function TitanItemDed_IsSpecialBag(bag)
 	if(bag<1 or bag>11) then return nil end
-	local bagInvId=ContainerIDToInventoryID(bag)
+	local bagInvId=C_Container.IDToInventoryID(bag)
 	if(not bagInvId) then return nil end
 	local bagLink=GetInventoryItemLink("player", bagInvId)
 	if(not bagLink) then return nil end
@@ -549,14 +549,14 @@ function TitanItemDed_UpdateList()
 
 	for bag = 0, NUM_BAG_FRAMES do
 		--if (not TitanItemDed_IsSpecialBag(bag)) then
-			for slot=1,GetContainerNumSlots(bag) do
+			for slot=1,C_Container.GetContainerNumSlots(bag) do
 				local price = nil;
 				local itemID = TitanItemDed_GetItemId(bag, slot);
-				local _, stackCount = GetContainerItemInfo(bag, slot);
+				local stackCount = C_Container.GetContainerItemInfo(bag, slot).stackCount;
 
 				if(itemID and stackCount) then
 					if(TitanItemDed_CustomPriceMode(itemID)) then
-						price = TitanItemDed_GetCustomPrice(GetContainerItemLink(bag, slot))
+						price = TitanItemDed_GetCustomPrice(C_Container.GetContainerItemLink(bag, slot))
 					end
 					-- fallback to vendor price if no custom price data is available
 					if(not price) then _,_,_,_,_,_,_,_,_,_,price = GetItemInfo(itemID) end
@@ -601,7 +601,7 @@ function TitanPanelItemDedButton_UpdateIcon()
 	local button = TitanUtils_GetButton(TITAN_ITEMDED_ID, true);
 
 	if (first) then
-		local texture=GetContainerItemInfo(first[1], first[2])
+		local texture=C_Container.GetContainerItemInfo(first[1], first[2]).iconFileID
 		button.registry.icon = texture
 	else
 		button.registry.icon = "";
@@ -643,7 +643,7 @@ function TitanPanelItemDedButton_GetButtonText(id)
 	local emptyColor = ((numEmpty < ITEMDED_WARN_THRESHOLD) and RED_FONT_COLOR_CODE) or NORMAL_FONT_COLOR_CODE
 
 	if (first) then
-		local _, stackCount = GetContainerItemInfo(first[1], first[2])
+		local stackCount = C_Container.GetContainerItemInfo(first[1], first[2]).stackCount
 		if(PlayerSettings.ShowPanelPrice and PlayerSettings.ShowPanelTotalPrice) then
 			return format(TITAN_BUTTONTEXT_HAVEITEM_WITH_PRICE_WITH_TOTAL_FORMAT,
 				TPID_Color[TitanItemDed_GetQuality(first[1], first[2])][1],
@@ -699,7 +699,7 @@ local function TitanPanelItemDedButton_RegenerateTooltipText()
 	local items=""
 
 	for idx, entry in ipairs(TitanItemDed_ItemList) do
-		local itemLink = GetContainerItemLink(entry[1], entry[2])
+		local itemLink = C_Container.GetContainerItemLink(entry[1], entry[2])
 		local itemID, itemName = TitanItemDed_GetItemIdNameFromLink(itemLink)
 		local customPriceMode = TitanItemDed_CustomPriceMode(itemID)
 		local customPrice, customPriceTag
@@ -708,7 +708,7 @@ local function TitanPanelItemDedButton_RegenerateTooltipText()
 			customPrice=TitanItemDed_GetCustomPrice(itemLink)
 			customPriceTag="("..(customPrice and "" or (TPID_CUSTOM_PRICE_NA.." "))..TPID_CUSTOM_PRICE[customPriceMode].short..") "
 		end
-		local _, stackCount = GetContainerItemInfo(entry[1], entry[2])
+		local stackCount = C_Container.GetContainerItemInfo(entry[1], entry[2]).stackCount
 		items = items..format(TITAN_TOOLTIPTEXT_ITEMENTRY_FORMAT,
 			(customPriceTag or ""),
 			TPID_Color[TitanItemDed_GetQuality(entry[1], entry[2])][1],
@@ -772,17 +772,17 @@ function TitanItemDed_Listman(cmd)
 
 	if(first and not firstID) then firstID = TitanItemDed_GetItemId(first[1], first[2]) end
 	local firstLink
-	if(first) then firstLink=GetContainerItemLink(first[1], first[2]) end
+	if(first) then firstLink=C_Container.GetContainerItemLink(first[1], first[2]) end
 
 	if (act == "t") then
 		if first then
 			if (MerchantFrame:IsVisible()) then
-				UseContainerItem(first[1], first[2]);
+				C_Container.UseContainerItem(first[1], first[2]);
 			else
-				local _, firstStack=GetContainerItemInfo(first[1], first[2])
+				local firstStack=C_Container.GetContainerItemInfo(first[1], first[2]).stackCount
 				if(firstStack>1) then firstLink=firstLink.." x"..firstStack end
 				TitanItemDed_Chatback(format(TPID_CHATBACK_ITEM_DELETED, firstLink, TitanItemDed_GetTextGSC(first[3])));
-				PickupContainerItem(first[1], first[2])
+				C_Container.PickupContainerItem(first[1], first[2])
 				DeleteCursorItem();
 			end
 		else
@@ -1077,10 +1077,10 @@ end
 
 function TitanItemDed_SellAll(self, checkFunction)
 	for bag=0,NUM_BAG_FRAMES do
-		for slot=1,GetContainerNumSlots(bag) do
+		for slot=1,C_Container.GetContainerNumSlots(bag) do
 			if (checkFunction(bag, slot)) then
 				if (MerchantFrame:IsVisible()) then
-					UseContainerItem(bag, slot);
+					C_Container.UseContainerItem(bag, slot);
 				else
 					return nil
 				end
@@ -1123,9 +1123,10 @@ function TitanItemDed_CombineAll(checkOnly, firstBag, lastBag, dontShowZero)
 		local realbag
 		if(bag == NUM_BAG_SLOTS+NUM_BANKBAGSLOTS+1) then realbag=BANK_CONTAINER else realbag=bag end
 		-- TitanItemDed_Chatback("Bag: "..realbag)
-		for slot=GetContainerNumSlots(realbag),1,-1 do
+		for slot=C_Container.GetContainerNumSlots(realbag),1,-1 do
 			local _, itemCount, locked
-			_, itemCount, locked = GetContainerItemInfo(realbag, slot)
+			itemCount = C_Container.GetContainerItemInfo(realbag, slot).stackCount
+			locked = C_Container.GetContainerItemInfo(realbag, slot).islocked
 			if(locked) then moreWork=true end
 			if(itemCount and not locked) then
 				local itemStackCount
@@ -1166,8 +1167,8 @@ function TitanItemDed_CombineAll(checkOnly, firstBag, lastBag, dontShowZero)
 					if(resultStack==itemStackCount) then break end
 				end
 			end
-			SplitContainerItem(foundIncompleteItem[bestSecondIdx][1], foundIncompleteItem[bestSecondIdx][2], foundIncompleteItem[bestSecondIdx][3])
-			PickupContainerItem(foundIncompleteItem[bestFirstIdx][1], foundIncompleteItem[bestFirstIdx][2])
+			C_Container.SplitContainerItem(foundIncompleteItem[bestSecondIdx][1], foundIncompleteItem[bestSecondIdx][2], foundIncompleteItem[bestSecondIdx][3])
+			C_Container.PickupContainerItem(foundIncompleteItem[bestFirstIdx][1], foundIncompleteItem[bestFirstIdx][2])
 			-- free
 			ftnum=ftnum+1 ftstorage[ftnum]=foundIncompleteItem[bestFirstIdx]
 			ftnum=ftnum+1 ftstorage[ftnum]=foundIncompleteItem[bestSecondIdx]
@@ -1273,7 +1274,7 @@ end
 
 -- local
 function TitanItemDed_IsDroppable(bag, slot)
-	local _, _, locked = GetContainerItemInfo(bag, slot)
+	local locked = C_Container.GetContainerItemInfo(bag, slot).isLocked
 	if(locked) then return false end
 	local itemId = TitanItemDed_GetItemId(bag, slot);
 	if (not itemId) then return false end

@@ -1,9 +1,9 @@
-## Interface: 11305
-## Title: Titan Panel Classic [|cffeda55fItemized Deductions|r] |cff00aa001.0.0.4|r
+## Interface: 30401
+## Title: Titan Panel WotLK [|cffeda55fItemized Deductions|r] |cff00aa001.0.0.4-fix|r
 ## Notes: Drop the cheapest item from your bags and other bag space freeing functions. Never have a full bag error again.
-## Version: 1.0.0.4
-## X-Date: 2020-10-30
-## Author: Kernighan
+## Version: 1.0.0.4-fix
+## X-Date: 2023-01-22
+## Author: Kernighan + Helper
 ## X-Email:
 ## X-Website:
 ## X-Category:
