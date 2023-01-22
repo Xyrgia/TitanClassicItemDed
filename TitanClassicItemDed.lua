@@ -484,7 +484,8 @@ local function TitanItemDed_GetItemId(bag, slot)
 end
 
 local function TitanItemDed_GetQuality(bag, slot)
-	local quality = C_Container.GetContainerItemInfo(bag, slot).quality
+	local quality = C_Container.GetContainerItemInfo(bag, slot)
+	if(quality) then quality = quality.quality else quality = nil end
 	if(not quality) then return nil end
 	if(quality == nil) then return nil end
 	if(quality == -1) then
@@ -552,7 +553,8 @@ function TitanItemDed_UpdateList()
 			for slot=1,C_Container.GetContainerNumSlots(bag) do
 				local price = nil;
 				local itemID = TitanItemDed_GetItemId(bag, slot);
-				local stackCount = C_Container.GetContainerItemInfo(bag, slot).stackCount;
+				local stackCount = C_Container.GetContainerItemInfo(bag, slot);
+				if(stackCount) then stackCount = stackCount.stackCount else stackCount = nil end
 
 				if(itemID and stackCount) then
 					if(TitanItemDed_CustomPriceMode(itemID)) then
@@ -601,7 +603,8 @@ function TitanPanelItemDedButton_UpdateIcon()
 	local button = TitanUtils_GetButton(TITAN_ITEMDED_ID, true);
 
 	if (first) then
-		local texture=C_Container.GetContainerItemInfo(first[1], first[2]).iconFileID
+		local texture=C_Container.GetContainerItemInfo(first[1], first[2])
+		if(texture) then texture = texture.iconFileID else texture = nil end
 		button.registry.icon = texture
 	else
 		button.registry.icon = "";
@@ -643,7 +646,8 @@ function TitanPanelItemDedButton_GetButtonText(id)
 	local emptyColor = ((numEmpty < ITEMDED_WARN_THRESHOLD) and RED_FONT_COLOR_CODE) or NORMAL_FONT_COLOR_CODE
 
 	if (first) then
-		local stackCount = C_Container.GetContainerItemInfo(first[1], first[2]).stackCount
+		local stackCount = C_Container.GetContainerItemInfo(first[1], first[2])
+		if(stackCount) then stackCount = stackCount.stackCount else stackCount = nil end
 		if(PlayerSettings.ShowPanelPrice and PlayerSettings.ShowPanelTotalPrice) then
 			return format(TITAN_BUTTONTEXT_HAVEITEM_WITH_PRICE_WITH_TOTAL_FORMAT,
 				TPID_Color[TitanItemDed_GetQuality(first[1], first[2])][1],
@@ -708,7 +712,8 @@ local function TitanPanelItemDedButton_RegenerateTooltipText()
 			customPrice=TitanItemDed_GetCustomPrice(itemLink)
 			customPriceTag="("..(customPrice and "" or (TPID_CUSTOM_PRICE_NA.." "))..TPID_CUSTOM_PRICE[customPriceMode].short..") "
 		end
-		local stackCount = C_Container.GetContainerItemInfo(entry[1], entry[2]).stackCount
+		local stackCount = C_Container.GetContainerItemInfo(entry[1], entry[2])
+		if(stackCount) then stackCount = stackCount.stackCount else stackCount = nil end
 		items = items..format(TITAN_TOOLTIPTEXT_ITEMENTRY_FORMAT,
 			(customPriceTag or ""),
 			TPID_Color[TitanItemDed_GetQuality(entry[1], entry[2])][1],
@@ -780,6 +785,7 @@ function TitanItemDed_Listman(cmd)
 				C_Container.UseContainerItem(first[1], first[2]);
 			else
 				local firstStack=C_Container.GetContainerItemInfo(first[1], first[2]).stackCount
+				if(firstStack) then firstStack = firstStack.stackCount else firstStack = nil end
 				if(firstStack>1) then firstLink=firstLink.." x"..firstStack end
 				TitanItemDed_Chatback(format(TPID_CHATBACK_ITEM_DELETED, firstLink, TitanItemDed_GetTextGSC(first[3])));
 				C_Container.PickupContainerItem(first[1], first[2])
@@ -1124,9 +1130,10 @@ function TitanItemDed_CombineAll(checkOnly, firstBag, lastBag, dontShowZero)
 		if(bag == NUM_BAG_SLOTS+NUM_BANKBAGSLOTS+1) then realbag=BANK_CONTAINER else realbag=bag end
 		-- TitanItemDed_Chatback("Bag: "..realbag)
 		for slot=C_Container.GetContainerNumSlots(realbag),1,-1 do
-			local _, itemCount, locked
-			itemCount = C_Container.GetContainerItemInfo(realbag, slot).stackCount
-			locked = C_Container.GetContainerItemInfo(realbag, slot).islocked
+			local itemCount = C_Container.GetContainerItemInfo(realbag, slot)
+			if(itemCount) then itemCount = itemCount.stackCount else itemCount = nil end
+			local locked = C_Container.GetContainerItemInfo(realbag, slot)
+			if(locked) then locked = locked.isLocked else locked = nil end
 			if(locked) then moreWork=true end
 			if(itemCount and not locked) then
 				local itemStackCount
@@ -1274,7 +1281,8 @@ end
 
 -- local
 function TitanItemDed_IsDroppable(bag, slot)
-	local locked = C_Container.GetContainerItemInfo(bag, slot).isLocked
+	local locked = C_Container.GetContainerItemInfo(bag, slot)
+	if(locked) then locked = locked.isLocked else locked = nil end
 	if(locked) then return false end
 	local itemId = TitanItemDed_GetItemId(bag, slot);
 	if (not itemId) then return false end
