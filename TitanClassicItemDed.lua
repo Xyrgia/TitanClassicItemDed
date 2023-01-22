@@ -784,7 +784,7 @@ function TitanItemDed_Listman(cmd)
 			if (MerchantFrame:IsVisible()) then
 				C_Container.UseContainerItem(first[1], first[2]);
 			else
-				local firstStack=C_Container.GetContainerItemInfo(first[1], first[2]).stackCount
+				local firstStack=C_Container.GetContainerItemInfo(first[1], first[2])
 				if(firstStack) then firstStack = firstStack.stackCount else firstStack = nil end
 				if(firstStack>1) then firstLink=firstLink.." x"..firstStack end
 				TitanItemDed_Chatback(format(TPID_CHATBACK_ITEM_DELETED, firstLink, TitanItemDed_GetTextGSC(first[3])));
