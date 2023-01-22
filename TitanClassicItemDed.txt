@@ -1,0 +1,22 @@
+Titan Panel Classic - Itemized Deductions
+
+This addon helps you to manage free space in your bags. If you ever searched through your inventory to find cheap junk to drop in favor of new loot or tired of manually stacking items that would take much less space, you will instantly understand how you can benefit from Itemized Deductions, because it does it all for you automatically.
+
+Features:
+- List of items in your bags sorted by price, allowing you to drop cheapest item or sell it if you happen to talk to vendor at the moment.
+- Titan Panel integration: cheapest item and, optionally, its price and total price of all items matching your filter will be displayed on Titan Panel. Howering over will show you full list of items, sorted by price, while right-clicking on it will give you access to most of Itemized Deductions' functions.
+- Filters to specify what items you want to consider for drop/sale: you can filter items by quality, item type (quest, consumable, etc), or soulbound status.
+- Custom prices: you can set any item to use price other than vendor sell price. Right now Auctioneer buyout price is only option, but any number of those can be added on request.
+- Mass selling options: with just a single click you can sell to vendor either all the poor quality items or all items that match your filter.
+- Stacks combining: you can automatically combine all incomplete stacks of same items either in bags or in bank.
+- Mass mailbox operation: a command available to get mass quantites of same item from your mailbox automatically. Additionally, if those items can be stacked, they'll be automatically stacked together. Just try it after you get back dozens of expired enchanting reagents from autction.
+
+Interface:
+- Titan Panel:
+  Most of the functions and options are available from Titan Panel Itemized Deductions' button right-click menu. Some of those options only appear when necessary: for example selling commands only show when you're talking to vendor. Additionally you can click on Itemized Deductions to open all your bags, shift-click do destroy or sell cheapest item, alt-click to ignore cheapest item for this session and alt-doubleclick to ignore it completely.
+- Slash commands:
+  All slash commads start with /itemded, /tpid, or /tid - all those are just aliases and do exactly the same.
+  * alwaysdrop (alias: ad) / alwaysignore (alias: ai): add or remove item from "always drop" or "always ignore list". This command is followed by word "add" for adding and "del" or "remove" or "delete" for removing for list, with item link or ID comming last. For example this command will make Ice Cold Milk always droppable, even if you've selected to drop only poor items or filtered consumables: /itemded ad add [Ice Cold Milk]. As another command this command will remove previously ignored Tough Hunk of Bread from list using its ID: /tid ai del 4540.
+  * combine (aliases: combineall, combineallinv, combineinv) - combines all incomplete stacks in your bags, just like same function in menu.
+  * combinebank (alias: combineallbank) - combines all incomplete stacks in your bank, just like same function in menu. Does nothing if you don't have bank window open, obviously.
+  * getmail [ItemLink] (alias: gm) - retrieves all the selected items from mailbox, stacking them together in process. Does nothing if you don't have mailbox window open. In addition to item links you can also use item IDs if you want to put this command in macro or if you're just good at remembering them, as this can save your from finding item link every time. This command, for example, will pull all the Strange Dust out of your mailbox: /itemded gm 10940

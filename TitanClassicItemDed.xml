@@ -1,0 +1,29 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/ ..\FrameXML\UI.xsd">
+<Script file="TitanClassicItemDed.lua"/>
+<GameTooltip name="TPIDTooltip" inherits="GameTooltipTemplate">
+<Scripts>
+     <Onload>
+       self:SetOwner(WorldFrame, "ANCHOR_NONE")
+     </Onload>
+   </Scripts>
+</GameTooltip>
+<Frame parent="UIParent">
+<Frames>
+<Button name="TitanPanelItemDedButton" inherits="TitanPanelComboTemplate" frameStrata="FULLSCREEN" toplevel="true">
+<Scripts>
+<OnLoad>TitanItemDed_OnLoad(self);
+TitanPanelButton_OnLoad(self);
+</OnLoad>
+<OnEvent>
+TitanItemDed_OnEvent(self, event, ...);
+</OnEvent>
+<OnClick>
+TitanItemDed_OnClick(self,button);
+TitanPanelButton_OnClick(self,button);
+</OnClick>
+<OnDoubleClick>TitanItemDed_OnDoubleClick(self,button);</OnDoubleClick>
+</Scripts>
+</Button>
+</Frames>
+</Frame>
+</Ui>
